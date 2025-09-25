@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import api from "@/lib/axios"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {deleteUser, getUsers, updateUser} from "@/lib/api"
 
 interface User {
   _id: string
@@ -10,27 +10,35 @@ interface User {
   role: string
 }
 
+
+
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
+  // users query
+  const { data: users, isLoading, isError } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+  })
 
-  useEffect(() => {
-    async function fetchUsers() {
-      try {
-        const { data } = await api.get("/users")
-        console.log("✅ Users API Response:", data)
+    // Delete Mutation
+  const deleteMutation = useMutation({
+    mutationFn: (userId: string) => deleteUser(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] })
+    },
+  })
 
-        setUsers(data.users)
-      } catch (err) {
-        console.error("❌ Failed to fetch users:", err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchUsers()
-  }, [])
+  // Update Mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ userId, updates }: { userId: string; updates: Partial<User> }) =>
+      updateUser(userId, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] })
+    },
+  })
 
-  if (loading) return <p className="p-6">Loading users...</p>
+  if (isLoading) return <p className="p-6">Loading users...</p>
+  if (isError) return <p className="p-6 text-red-500">❌ Failed to fetch users</p>
 
   return (
     <div className="p-6">
@@ -45,7 +53,7 @@ export default function UsersPage() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {users?.map((user:User) => (
             <tr key={user._id}>
               <td className="p-2 border">{user.username}</td>
               <td className="p-2 border">{user.email}</td>

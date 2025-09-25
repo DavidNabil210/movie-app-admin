@@ -24,7 +24,7 @@ export default function AuthForm() {
 
       if (res.data.success) {
         // redirect or store token if needed
-        router.push("/dashboard") 
+        router.push("/admin") 
       } else {
         setError(res.data.error || "Login failed")
       }
