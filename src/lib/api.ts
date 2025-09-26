@@ -17,7 +17,8 @@ export async function deleteUser(userId: string) {
   return data
 }
 
-export async function updateUser(userId: string, updates: Partial<{ username: string; email: string; role: string }>) {
+// api.ts
+export async function updateUser(userId: string, updates: any) {
   const { data } = await api.put(`/users/${userId}`, updates)
   return data
 }
