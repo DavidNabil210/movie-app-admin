@@ -6,7 +6,7 @@ export async function getUsers() {
 }
 export async function getEntities() {
   const { data } = await api.get("/entities")
-  return data
+  return data.entites
 }
 export async function getArticles() {
   const { data } = await api.get("/articles")
@@ -17,8 +17,8 @@ export async function deleteUser(userId: string) {
   return data
 }
 
-// api.ts
-export async function updateUser(userId: string, updates: any) {
+export async function updateUser(userId: string, updates: Partial<{ username: string; email: string; role: string }>) {
   const { data } = await api.put(`/users/${userId}`, updates)
   return data
 }
+

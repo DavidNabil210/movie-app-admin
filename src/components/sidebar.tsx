@@ -6,7 +6,7 @@ import { Home, Users, Film, Settings } from "lucide-react"
 const menu = [
   { href: "/admin", label: "Dashboard", icon: Home },
   { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/movies", label: "Movies", icon: Film },
+  { href: "/admin/Entities", label: "Movies", icon: Film },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ]
 
