@@ -6,7 +6,7 @@ export async function getUsers() {
 }
 export async function getEntities() {
   const { data } = await api.get("/entities")
-  return data.entites
+  return data?.entities ? data : { entities: [], pagination: {} }
 }
 export async function getArticles() {
   const { data } = await api.get("/articles")
