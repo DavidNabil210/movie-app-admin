@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/table"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 
 interface Genre {
   name: string
@@ -28,11 +30,27 @@ interface Entity {
   directors: string[]
   cast: string[]
 }
-
 export default function EntitiesPage() {
+  const [filter, setFilter] = useState<"all" | "movie" | "tv">("all")
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["entities"],
-    queryFn: getEntities,
+    queryKey: ["entities", filter],
+    queryFn: async () => {
+      const result = await getEntities()
+      const entities = (result?.entities || []) as Entity[]
+      if (filter === "movie") {
+        const movies = entities.filter(entity => entity?.type === 'movie')
+
+        return { ...result, entities: movies }
+      }
+
+      if (filter === "tv") {
+        const tvShows = entities.filter(entity => entity?.type === 'tv')
+        return { ...result, entities: tvShows }
+      }
+
+      return { ...result, entities }
+    },
   })
 
   if (isLoading) return <p>Loading...</p>
@@ -42,8 +60,28 @@ export default function EntitiesPage() {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <CardTitle>Entities</CardTitle>
+        <div className="flex gap-2">
+          <Button
+            variant={filter === "all" ? "default" : "outline"}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </Button>
+          <Button
+            variant={filter === "movie" ? "default" : "outline"}
+            onClick={() => setFilter("movie")}
+          >
+            Movies
+          </Button>
+          <Button
+            variant={filter === "tv" ? "default" : "outline"}
+            onClick={() => setFilter("tv")}
+          >
+            TV Shows
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>

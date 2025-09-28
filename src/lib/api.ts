@@ -21,4 +21,24 @@ export async function updateUser(userId: string, updates: Partial<{ username: st
   const { data } = await api.put(`/users/${userId}`, updates)
   return data
 }
+// Get movies only
+export async function getMovies() {
+  try {
+    const { data } = await api.get("/entities/movies/filter")
+    return data?.entities ? data : { entities: [], pagination: {} }
+  } catch (error) {
+    console.error("Error fetching movies:", error)
+    return { entities: [], pagination: {} }
+  }
+}
 
+// Get tv shows only
+export async function getTvShows() {
+  try {
+    const { data } = await api.get("/entities/tv/filter")
+    return data?.entities ? data : { entities: [], pagination: {} }
+  } catch (error) {
+    console.error("Error fetching TV shows:", error)
+    return { entities: [], pagination: {} }
+  }
+}
