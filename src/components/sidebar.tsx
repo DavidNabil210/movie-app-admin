@@ -7,7 +7,7 @@ const menu = [
   { href: "/admin", label: "Dashboard", icon: Home },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/Entities", label: "Movies", icon: Film },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin/Articles", label: "articles", icon: Settings },
 ]
 
 export function Sidebar() {
