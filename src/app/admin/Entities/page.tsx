@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getEntities } from "@/lib/api"
 import {
   Table,
@@ -14,6 +14,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 
 interface Genre {
   name: string
@@ -31,6 +33,53 @@ interface Entity {
   cast: string[]
 }
 export default function EntitiesPage() {
+
+  const [open, setOpen] = useState(false)
+  const queryClient = useQueryClient()
+
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [releaseDate, setReleaseDate] = useState("")
+  const [genreName, setGenreName] = useState("")
+
+
+  const addMovie = useMutation({
+    mutationFn: async (movieData: any) => {
+      const response = await fetch('/api/entities/movie', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(movieData),
+      })
+      if (!response.ok) throw new Error('Failed to add movie')
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["entities"] })
+      setOpen(false)
+      // Clear form
+      setTitle("")
+      setDescription("")
+      setReleaseDate("")
+      setGenreName("")
+    },
+  })
+
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const movieData = {
+      title,
+      description,
+      releaseDate,
+      type: "movie",
+      genres: genreName ? [{ name: genreName }] : [],
+      directors: [],
+      cast: []
+    }
+
+    addMovie.mutate(movieData)
+  }
   const [filter, setFilter] = useState<"all" | "movie" | "tv">("all")
 
   const { data, isLoading, isError } = useQuery({
@@ -60,6 +109,54 @@ export default function EntitiesPage() {
 
   return (
     <Card>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button>Add Movie</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Movie</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Title</label>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Description</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Release Date</label>
+              <Input
+                type="date"
+                value={releaseDate}
+                onChange={(e) => setReleaseDate(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Genre</label>
+              <Input
+                value={genreName}
+                onChange={(e) => setGenreName(e.target.value)}
+                placeholder="Action, Drama, etc."
+              />
+            </div>
+            <Button type="submit" disabled={addMovie.isPending}>
+              {addMovie.isPending ? "Adding..." : "Add Movie"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <CardTitle>Entities</CardTitle>
         <div className="flex gap-2">
