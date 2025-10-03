@@ -1,7 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getEntities } from "@/lib/api"
+import { getEntities, deleteEntity } from "@/lib/api"
 import api from "@/lib/axios"
 
 import {
@@ -63,6 +63,13 @@ export default function EntitiesPage() {
   })
 
 
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteEntity(id),
+    onSuccess: () => {
+      // Refresh entity list after deletion
+      queryClient.invalidateQueries({ queryKey: ["entities"] })
+    },
+  })
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -205,6 +212,19 @@ export default function EntitiesPage() {
               {entities.map((entity) => (
                 <TableRow key={entity._id}>
                   <TableCell className="font-medium">{entity.title}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => {
+                        if (confirm("Are you sure you want to delete this entity?")) {
+                          deleteMutation.mutate(entity._id)
+                        }
+                      }}
+                      disabled={deleteMutation.isPending}
+                      className="bg-red-500 text-white px-3 py-1 rounded disabled:opacity-50"
+                    >
+                      {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                    </button>
+                  </TableCell>
                   <TableCell>{entity.description}</TableCell>
                   <TableCell>
                     {new Date(entity.releaseDate).toLocaleDateString()}

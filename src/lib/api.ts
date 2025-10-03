@@ -42,3 +42,10 @@ export async function getTvShows() {
     return { entities: [], pagination: {} }
   }
 }
+
+//delete entity
+export async function deleteEntity(id: string) {
+  const { data } = await api.delete(`/entities/${id}`)
+  return data
+}
+
