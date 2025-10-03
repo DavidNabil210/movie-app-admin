@@ -43,11 +43,12 @@ export default function EntitiesPage() {
   const [description, setDescription] = useState("")
   const [releaseDate, setReleaseDate] = useState("")
   const [genreName, setGenreName] = useState("")
+  const [entityType, setEntityType] = useState<"movie" | "tv">("movie")
 
 
-  const addMovie = useMutation({
-    mutationFn: async (movieData: any) => {
-      const { data } = await api.post("/entities/movie", movieData)
+  const AddEntity = useMutation({
+    mutationFn: async (entityData: any) => {
+      const { data } = await api.post(`/entities/${entityType}`, entityData)
       return data
     },
     onSuccess: () => {
@@ -57,6 +58,7 @@ export default function EntitiesPage() {
       setDescription("")
       setReleaseDate("")
       setGenreName("")
+      setEntityType("movie")
     },
   })
 
@@ -64,17 +66,17 @@ export default function EntitiesPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const movieData = {
+    const entityData = {
       title,
       description,
       releaseDate,
-      type: "movie",
+      type: entityType,
       genres: genreName ? [{ name: genreName }] : [],
       directors: [],
       cast: []
     }
 
-    addMovie.mutate(movieData)
+    AddEntity.mutate(entityData)
   }
   const [filter, setFilter] = useState<"all" | "movie" | "tv">("all")
 
@@ -107,15 +109,23 @@ export default function EntitiesPage() {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button>Add Movie</Button>
+          <Button>Add Entity</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Movie</DialogTitle>
+            <DialogTitle>Add New {entityType === "movie" ? "movie" : "tv show"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Title</label>
+              <label className="text-sm font-medium">type</label>
+              <select
+                value={entityType}
+                onChange={(e) => setEntityType(e.target.value as "movie" | "tv")}
+                className="border rounded p-2 w-full"
+              >
+                <option value="movie">Movie</option>
+                <option value="tv">TV Show</option>
+              </select>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -147,8 +157,8 @@ export default function EntitiesPage() {
                 placeholder="Action, Drama, etc."
               />
             </div>
-            <Button type="submit" disabled={addMovie.isPending}>
-              {addMovie.isPending ? "Adding..." : "Add Movie"}
+            <Button type="submit" disabled={AddEntity.isPending}>
+              {AddEntity.isPending ? "Adding..." : "Add Entity"}
             </Button>
           </form>
         </DialogContent>
