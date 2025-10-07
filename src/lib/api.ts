@@ -31,17 +31,23 @@ export async function getMovies() {
     return { entities: [], pagination: {} }
   }
 }
-
-// Get tv shows only
+//get tv shows
 export async function getTvShows() {
   try {
     const { data } = await api.get("/entities/tv/filter")
-    return data?.entities ? data : { entities: [], pagination: {} }
+    console.log("TV Shows data:", data)
+    // ✅ Map tvShows to entities to match component expectations
+    return { 
+      entities: data?.tvShows || [],
+      count: data?.count || 0,
+      success: data?.success || false
+    }
   } catch (error) {
     console.error("Error fetching TV shows:", error)
-    return { entities: [], pagination: {} }
+    return { entities: [], count: 0, success: false }
   }
 }
+
 
 //delete entity
 export async function deleteEntity(id: string) {
