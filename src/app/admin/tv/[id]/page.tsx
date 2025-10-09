@@ -48,14 +48,14 @@ export default function TvShowDetails() {
         </div>
       </div>
 
-      {/* ⭐ Rating */}
+      {/*  Rating */}
       {tv.rating && (
         <p className="text-lg font-semibold mt-4">
-          ⭐ Rating: <span className="text-yellow-500">{tv.rating}/10</span>
+           Rating: <span className="text-yellow-500">{tv.rating}/10</span>
         </p>
       )}
 
-      {/* 🎭 Genres */}
+      {/*  Genres */}
       {tv.genres && tv.genres.length > 0 && (
         <div>
           <h2 className="text-2xl font-semibold mt-6 mb-2">Genres</h2>
@@ -71,7 +71,7 @@ export default function TvShowDetails() {
         </div>
       )}
 
-      {/* 🎬 Directors */}
+      {/*  Directors */}
       {tv.directors && tv.directors.length > 0 && (
         <div>
           <h2 className="text-2xl font-semibold mt-6 mb-2">Directors</h2>
@@ -83,7 +83,7 @@ export default function TvShowDetails() {
         </div>
       )}
 
-      {/* 👨‍🎤 Cast */}
+      {/*  Cast */}
       {tv.cast && tv.cast.length > 0 && (
         <div>
           <h2 className="text-2xl font-semibold mt-6 mb-2">Cast</h2>
@@ -95,7 +95,7 @@ export default function TvShowDetails() {
         </div>
       )}
 
-      {/* 🕒 Dates */}
+      {/*  Dates */}
       <div className="mt-6 text-sm text-gray-500">
         <p>Release Date: {new Date(tv.releaseDate).toLocaleDateString()}</p>
         <p>Created At: {new Date(tv.createdAt).toLocaleString()}</p>

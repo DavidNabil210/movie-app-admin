@@ -1,13 +1,15 @@
 "use client"
 
 import Link from "next/link"
-import { Home, Users, Film, Settings } from "lucide-react"
+import { Home, Users, Film, Settings,Newspaper,Tv } from "lucide-react"
+
 
 const menu = [
   { href: "/admin", label: "Dashboard", icon: Home },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/Entities", label: "Movies", icon: Film },
-  { href: "/admin/Articles", label: "articles", icon: Settings },
+  { href: "/admin/Articles", label: "articles", icon: Newspaper },
+   { href: "/admin/tv", label: "TV", icon: Tv },
 ]
 
 export function Sidebar() {

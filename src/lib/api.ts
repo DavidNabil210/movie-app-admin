@@ -55,8 +55,19 @@ export async function deleteEntity(id: string) {
   return data
 }
 
-
+//get entity by id 
 export async function getEntityById(id:string) {
   const { data } = await api.get(`/entities/${id}`)
+  return data
+}
+interface ArticleInput {
+  title: string
+  content: string
+  
+}
+
+//Add New Article
+export async function addArticle(articleData:ArticleInput) {
+  const {data}=await api.post(`/articles`,articleData)
   return data
 }

@@ -13,6 +13,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import AddArticle from "@/components/AddArticle"
 
 interface Author {
   _id: string
@@ -53,6 +54,7 @@ export default function ArticlesPage() {
     <Card>
       <CardHeader>
         <CardTitle>Articles</CardTitle>
+        <AddArticle/>
       </CardHeader>
       <CardContent>
         <Table>
