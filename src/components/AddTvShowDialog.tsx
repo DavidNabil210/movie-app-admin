@@ -27,6 +27,10 @@ type Season = {
   coverUrl: string
   episodes: Episode[]
 }
+type Genre = {
+  name: string
+  description: string
+}
 type TvFormData = {
 
   title: string
@@ -35,7 +39,9 @@ type TvFormData = {
   endDate: string
   posterUrl: string
   coverUrl: string
+  genres: Genre[]
   seasons: Season[]
+
 }
 export function AddTvShowDialog() {
   const [open, setOpen] = useState(false)
@@ -46,6 +52,7 @@ export function AddTvShowDialog() {
     endDate: "",
     posterUrl: "",
     coverUrl: "",
+    genres: [{ name: "", description: "" }],
     seasons: [{
       seasonNumber: 1,
       description: "",
@@ -88,78 +95,97 @@ export function AddTvShowDialog() {
     },
   })
   // Updated Season Data
-const handleSeasonChange = <K extends keyof Season>(
-  index: number,        
-  field: K,             
-  value: Season[K]     
-) => {
-  const updatedSeasons = [...formData.seasons] 
-  updatedSeasons[index][field] = value          
-  setFormData({ ...formData, seasons: updatedSeasons }) 
-}
-// Updated Episode Data
-const handleEpisodeChange = <K extends keyof Episode>(
-  seasonIndex: number,
-  episodeIndex: number,
-  field: K,
-  value: Episode[K]
-) => {
-  const updatedSeasons = [...formData.seasons]
-  updatedSeasons[seasonIndex].episodes[episodeIndex][field] = value
-  setFormData({ ...formData, seasons: updatedSeasons })
-}
-// Add New Season 
-const addSeason = () => {
-  setFormData({
-    ...formData,
-    seasons: [
-      ...formData.seasons,  
-      {
-        seasonNumber: formData.seasons.length + 1, 
-        description: "",
-        posterUrl: "",
-        coverUrl: "",
-        episodes: [
-          {
-            title: "",
-            episodeNumber: 1,
-            description: "",
-            releaseDate: "",
-            duration: "",
-            thumbnailUrl: "",
-          },
-        ],
-      },
-    ],
-  })
-}
-// Add New Episode
-const addEpisode = (seasonIndex: number) => {
-  const updatedSeasons = [...formData.seasons]
-  updatedSeasons[seasonIndex].episodes.push({
-    title: "",
-    episodeNumber: updatedSeasons[seasonIndex].episodes.length + 1,
-    description: "",
-    releaseDate: "",
-    duration: "",
-    thumbnailUrl: "",
-  })
-  setFormData({ ...formData, seasons: updatedSeasons })
-}
+  const handleSeasonChange = <K extends keyof Season>(
+    index: number,
+    field: K,
+    value: Season[K]
+  ) => {
+    const updatedSeasons = [...formData.seasons]
+    updatedSeasons[index][field] = value
+    setFormData({ ...formData, seasons: updatedSeasons })
+  }
+  // Updated Episode Data
+  const handleEpisodeChange = <K extends keyof Episode>(
+    seasonIndex: number,
+    episodeIndex: number,
+    field: K,
+    value: Episode[K]
+  ) => {
+    const updatedSeasons = [...formData.seasons]
+    updatedSeasons[seasonIndex].episodes[episodeIndex][field] = value
+    setFormData({ ...formData, seasons: updatedSeasons })
+  }
+  // Add New Season 
+  const addSeason = () => {
+    setFormData({
+      ...formData,
+      seasons: [
+        ...formData.seasons,
+        {
+          seasonNumber: formData.seasons.length + 1,
+          description: "",
+          posterUrl: "",
+          coverUrl: "",
+          episodes: [
+            {
+              title: "",
+              episodeNumber: 1,
+              description: "",
+              releaseDate: "",
+              duration: "",
+              thumbnailUrl: "",
+            },
+          ],
+        },
+      ],
+    })
+  }
+  // Add New Episode
+  const addEpisode = (seasonIndex: number) => {
+    const updatedSeasons = [...formData.seasons]
+    updatedSeasons[seasonIndex].episodes.push({
+      title: "",
+      episodeNumber: updatedSeasons[seasonIndex].episodes.length + 1,
+      description: "",
+      releaseDate: "",
+      duration: "",
+      thumbnailUrl: "",
+    })
+    setFormData({ ...formData, seasons: updatedSeasons })
+  }
 
-//Remove Season 
-const removeSeason = (index: number) => {
-  const updatedSeasons = [...formData.seasons]
-  updatedSeasons.splice(index, 1) 
-  setFormData({ ...formData, seasons: updatedSeasons })
-}
+  //Remove Season 
+  const removeSeason = (index: number) => {
+    const updatedSeasons = [...formData.seasons]
+    updatedSeasons.splice(index, 1)
+    setFormData({ ...formData, seasons: updatedSeasons })
+  }
 
-// Remove Episode 
-const removeEpisode = (seasonIndex: number, episodeIndex: number) => {
-  const updatedSeasons = [...formData.seasons]
-  updatedSeasons[seasonIndex].episodes.splice(episodeIndex, 1)
-  setFormData({ ...formData, seasons: updatedSeasons })
-}
+  // Remove Episode 
+  const removeEpisode = (seasonIndex: number, episodeIndex: number) => {
+    const updatedSeasons = [...formData.seasons]
+    updatedSeasons[seasonIndex].episodes.splice(episodeIndex, 1)
+    setFormData({ ...formData, seasons: updatedSeasons })
+  }
+
+  const handleGenreChange = (index: number, field: keyof Genre, value: string) => {
+    const updatedGenres = [...formData.genres]
+    updatedGenres[index][field] = value
+    setFormData({ ...formData, genres: updatedGenres })
+  }
+
+  const addGenre = () => {
+    setFormData({
+      ...formData,
+      genres: [...formData.genres, { name: "", description: "" }],
+    })
+  }
+
+  const removeGenre = (index: number) => {
+    const updatedGenres = formData.genres.filter((_, i) => i !== index)
+    setFormData({ ...formData, genres: updatedGenres })
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     addTvShow.mutate({
@@ -167,6 +193,7 @@ const removeEpisode = (seasonIndex: number, episodeIndex: number) => {
       ...formData,
     })
   }
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -244,7 +271,38 @@ const removeEpisode = (seasonIndex: number, episodeIndex: number) => {
               placeholder="https://..."
             />
           </div>
- {/* Seasons Section */}
+          {/* Genres Section */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Genres</h3>
+
+            {formData.genres.map((genre, index) => (
+              <div key={index} className="flex gap-2 items-center">
+                <Input
+                  placeholder="Genre Name"
+                  value={genre.name}
+                  onChange={(e) => handleGenreChange(index, "name", e.target.value)}
+                />
+                <Input
+                  placeholder="Description"
+                  value={genre.description}
+                  onChange={(e) => handleGenreChange(index, "description", e.target.value)}
+                />
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => removeGenre(index)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+
+            <Button variant="outline" onClick={addGenre}>
+              Add Genre
+            </Button>
+          </div>
+
+          {/* Seasons Section */}
           <div className="border-t pt-4 mt-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">Seasons</h3>

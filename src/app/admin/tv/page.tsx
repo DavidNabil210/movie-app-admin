@@ -63,12 +63,12 @@ export default function TVPage() {
                                 <TableCell>
                                     {entity.seasons?.length ? (
                                         entity.seasons.map((s: any) => (
-                                            <div key={s.number} className="flex items-center gap-2 mb-1">
-                                                <span>Season {s.number}</span>
+                                            <div key={s.seasonNumber } className="flex items-center gap-2 mb-1">
+                                                <span>Season {s.seasonNumber }</span>
                                                 {s.poster && (
                                                     <img
                                                         src={s.poster}
-                                                        alt={`Season ${s.number}`}
+                                                        alt={`Season ${s.seasonNumber }`}
                                                         className="w-10 h-10 rounded object-cover"
                                                     />
                                                 )}
