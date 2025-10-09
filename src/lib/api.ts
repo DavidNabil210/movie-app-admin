@@ -55,3 +55,8 @@ export async function deleteEntity(id: string) {
   return data
 }
 
+
+export async function getEntityById(id:string) {
+  const { data } = await api.get(`/entities/${id}`)
+  return data
+}

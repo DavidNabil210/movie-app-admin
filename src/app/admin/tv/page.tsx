@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { AddTvShowDialog } from "@/components/AddTvShowDialog"
 // import { AddTvShowDialog } from "@/components/AddTvShowDialog"
+import Link from "next/link"
+
 
 export default function TVPage() {
     const queryClient = useQueryClient()
@@ -17,7 +19,7 @@ export default function TVPage() {
         queryKey: ["tv-entities"],
         queryFn: getTvShows,
     })
-  const entities =  data?.entities || []
+    const entities = data?.entities || []
 
 
     const deleteMutation = useMutation({
@@ -29,13 +31,13 @@ export default function TVPage() {
 
     if (isLoading) return <p>Loading...</p>
     if (error) return <p>Error loading TV shows</p>
-    
+
     return (
         <Card>
             <CardHeader>
                 <CardTitle>TV Shows</CardTitle>
-                <AddTvShowDialog/>
-            
+                <AddTvShowDialog />
+
             </CardHeader>
             <CardContent>
                 <Table>
@@ -51,7 +53,14 @@ export default function TVPage() {
                     <TableBody>
                         {entities.map((entity: any) => (
                             <TableRow key={entity._id}>
-                                <TableCell>{entity.title}</TableCell>
+                                <TableCell>
+                                    <Link
+                                        href={`/admin/tv/${entity._id}`}
+                                        className="text-blue-600 hover:underline cursor-pointer"
+                                    >
+                                        {entity.title}
+                                    </Link>
+                                </TableCell>
                                 <TableCell>
                                     {entity.genres?.map((g: any) => (
                                         <Badge key={g._id} className="mr-1">
@@ -63,12 +72,12 @@ export default function TVPage() {
                                 <TableCell>
                                     {entity.seasons?.length ? (
                                         entity.seasons.map((s: any) => (
-                                            <div key={s.seasonNumber } className="flex items-center gap-2 mb-1">
-                                                <span>Season {s.seasonNumber }</span>
+                                            <div key={s.seasonNumber} className="flex items-center gap-2 mb-1">
+                                                <span>Season {s.seasonNumber}</span>
                                                 {s.poster && (
                                                     <img
                                                         src={s.poster}
-                                                        alt={`Season ${s.seasonNumber }`}
+                                                        alt={`Season ${s.seasonNumber}`}
                                                         className="w-10 h-10 rounded object-cover"
                                                     />
                                                 )}
