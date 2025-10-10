@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { addArticle } from "@/lib/api"
+import { addArticle,getEntities } from "@/lib/api"
 
 export default function AddArticle() {
   const queryClient = useQueryClient()
@@ -15,6 +15,10 @@ export default function AddArticle() {
     title: "",
     content: "",
     relatedEntity: ""
+  })
+  const {data:entitiesData, isLoading:isEntitiesLoading}=useQuery({
+    queryKey:['Entities'],
+    queryFn:getEntities,
   })
 
   const { mutate, isPending } = useMutation({
@@ -29,7 +33,7 @@ export default function AddArticle() {
     }
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
@@ -73,15 +77,28 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
             />
           </div>
 
+                  {/* Related Entity */}
           <div>
-            <Label>Related Entity ID</Label>
-            <Input
+            <Label htmlFor="relatedEntity">Related Entity</Label>
+            <select
+              id="relatedEntity"
               name="relatedEntity"
               value={formData.relatedEntity}
               onChange={handleChange}
-              placeholder="Entity ID (e.g., TV show _id)"
+              className="w-full border rounded p-2"
               required
-            />
+            >
+              <option value="">-- Select an Entity --</option>
+              {isEntitiesLoading ? (
+                <option disabled>Loading...</option>
+              ) : (
+                entitiesData?.entities?.map((entity: any) => (
+                  <option key={entity._id} value={entity._id}>
+                    {entity.title}
+                  </option>
+                ))
+              )}
+            </select>
           </div>
 
           <Button type="submit" disabled={isPending} className="w-full">
