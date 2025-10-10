@@ -11,31 +11,33 @@ import { addArticle } from "@/lib/api"
 
 export default function AddArticle() {
   const queryClient = useQueryClient()
-
   const [formData, setFormData] = useState({
     title: "",
     content: "",
+    relatedEntity: ""
   })
 
   const { mutate, isPending } = useMutation({
     mutationFn: addArticle,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["articles"] })
-      setFormData({ title: "", content: "" })
+
+      setFormData({ title: "", content: "", relatedEntity: "" })
     },
     onError: (err) => {
       console.error("Error adding article:", err)
-    },
+    }
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    mutate(formData)
-  }
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault()
+  mutate(formData)
+}
+
 
   return (
     <Dialog>
@@ -50,29 +52,40 @@ export default function AddArticle() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Title</Label>
+            <Label>Title</Label>
             <Input
-              id="title"
               name="title"
               value={formData.title}
               onChange={handleChange}
               placeholder="Enter article title"
+              required
             />
           </div>
 
           <div>
-            <Label htmlFor="content">Content</Label>
+            <Label>Content</Label>
             <Textarea
-              id="content"
               name="content"
               value={formData.content}
               onChange={handleChange}
-              placeholder="Write article content"
+              placeholder="Write your article content..."
+              required
             />
           </div>
 
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : "Save"}
+          <div>
+            <Label>Related Entity ID</Label>
+            <Input
+              name="relatedEntity"
+              value={formData.relatedEntity}
+              onChange={handleChange}
+              placeholder="Entity ID (e.g., TV show _id)"
+              required
+            />
+          </div>
+
+          <Button type="submit" disabled={isPending} className="w-full">
+            {isPending ? "Adding..." : "Add Article"}
           </Button>
         </form>
       </DialogContent>

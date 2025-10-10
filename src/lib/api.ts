@@ -60,14 +60,21 @@ export async function getEntityById(id:string) {
   const { data } = await api.get(`/entities/${id}`)
   return data
 }
+
+//Add New Article
+
 interface ArticleInput {
   title: string
   content: string
   
 }
 
-//Add New Article
 export async function addArticle(articleData:ArticleInput) {
   const {data}=await api.post(`/articles`,articleData)
+  return data
+}
+//delete article 
+export async function deleteArticle(id:string) {
+  const {data}=await api.delete(`/articles/${id}`)
   return data
 }

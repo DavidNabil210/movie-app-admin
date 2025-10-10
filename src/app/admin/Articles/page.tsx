@@ -1,7 +1,7 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
-import { getArticles } from "@/lib/api"
+import { useMutation, useQuery,useQueryClient } from "@tanstack/react-query"
+import { deleteArticle, getArticles } from "@/lib/api"
 import {
   Table,
   TableBody,
@@ -40,9 +40,17 @@ interface Article {
 }
 
 export default function ArticlesPage() {
+  const queryClient=useQueryClient()
   const { data, isLoading, isError } = useQuery({
     queryKey: ["articles"],
     queryFn: getArticles,
+  })
+  const deleteMutation=useMutation({
+    mutationFn:(id:string)=>deleteArticle(id),
+     onSuccess: () => {
+      // Refresh articles list after deletion
+      queryClient.invalidateQueries({ queryKey: ["articles"] })
+    },
   })
 
   if (isLoading) return <p>Loading...</p>
@@ -130,6 +138,19 @@ export default function ArticlesPage() {
                     {new Date(article.createdAt).toLocaleDateString()}
                   </div>
                 </TableCell>
+                <TableCell>
+                                    <button
+                                      onClick={() => {
+                                        if (confirm("Are you sure you want to delete this article?")) {
+                                          deleteMutation.mutate(article._id)
+                                        }
+                                      }}
+                                      disabled={deleteMutation.isPending}
+                                      className="bg-red-500 text-white px-3 py-1 rounded disabled:opacity-50"
+                                    >
+                                      {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                                    </button>
+                                  </TableCell>
               </TableRow>
             ))}
           </TableBody>
