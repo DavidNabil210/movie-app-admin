@@ -78,3 +78,8 @@ export async function deleteArticle(id:string) {
   const {data}=await api.delete(`/articles/${id}`)
   return data
 }
+
+export async function getArticleById(id: string) {
+  const { data } = await api.get(`/api/articles/${id}`)
+  return data
+}

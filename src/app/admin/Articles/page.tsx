@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation, useQuery,useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { deleteArticle, getArticles } from "@/lib/api"
 import {
   Table,
@@ -14,6 +14,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import AddArticle from "@/components/AddArticle"
+import Link from "next/link"
 
 interface Author {
   _id: string
@@ -40,14 +41,14 @@ interface Article {
 }
 
 export default function ArticlesPage() {
-  const queryClient=useQueryClient()
+  const queryClient = useQueryClient()
   const { data, isLoading, isError } = useQuery({
     queryKey: ["articles"],
     queryFn: getArticles,
   })
-  const deleteMutation=useMutation({
-    mutationFn:(id:string)=>deleteArticle(id),
-     onSuccess: () => {
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteArticle(id),
+    onSuccess: () => {
       // Refresh articles list after deletion
       queryClient.invalidateQueries({ queryKey: ["articles"] })
     },
@@ -62,7 +63,7 @@ export default function ArticlesPage() {
     <Card>
       <CardHeader>
         <CardTitle>Articles</CardTitle>
-        <AddArticle/>
+        <AddArticle />
       </CardHeader>
       <CardContent>
         <Table>
@@ -81,7 +82,7 @@ export default function ArticlesPage() {
                 <TableCell className="font-medium max-w-xs">
                   <div className="truncate">{article.title}</div>
                 </TableCell>
-                
+
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
@@ -102,7 +103,7 @@ export default function ArticlesPage() {
                     </div>
                   </div>
                 </TableCell>
-                
+
                 <TableCell>
                   {article.relatedEntity ? (
                     <div className="flex items-center gap-2">
@@ -126,31 +127,34 @@ export default function ArticlesPage() {
                     <span className="text-gray-500">No related entity</span>
                   )}
                 </TableCell>
-                
+
                 <TableCell className="max-w-md">
                   <div className="truncate text-sm text-gray-600">
                     {article.content.substring(0, 100)}...
                   </div>
                 </TableCell>
-                
+
                 <TableCell>
                   <div className="text-sm">
                     {new Date(article.createdAt).toLocaleDateString()}
                   </div>
                 </TableCell>
                 <TableCell>
-                                    <button
-                                      onClick={() => {
-                                        if (confirm("Are you sure you want to delete this article?")) {
-                                          deleteMutation.mutate(article._id)
-                                        }
-                                      }}
-                                      disabled={deleteMutation.isPending}
-                                      className="bg-red-500 text-white px-3 py-1 rounded disabled:opacity-50"
-                                    >
-                                      {deleteMutation.isPending ? "Deleting..." : "Delete"}
-                                    </button>
-                                  </TableCell>
+                  <button
+                    onClick={() => {
+                      if (confirm("Are you sure you want to delete this article?")) {
+                        deleteMutation.mutate(article._id)
+                      }
+                    }}
+                    disabled={deleteMutation.isPending}
+                    className="bg-red-500 text-white px-3 py-1 rounded disabled:opacity-50"
+                  >
+                    {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                  </button>
+                </TableCell>
+                <Link href={`/admin/Articles/${article._id}`} className="text-blue-500 hover:underline">
+                  View Details
+                </Link>
               </TableRow>
             ))}
           </TableBody>
