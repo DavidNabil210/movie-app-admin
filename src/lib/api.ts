@@ -84,3 +84,11 @@ export async function getArticleById(id: string) {
   return data
   
 }
+
+//Get All Articles By Author
+export async function getArticlesByAuthor(authorId: string) {
+
+   const { data } = await api.get(`/articles/author/${authorId}`)
+  return data
+  
+}

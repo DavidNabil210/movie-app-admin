@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import Link from "next/link"
 
 export default function ArticleDetails() {
   const { id } = useParams()
@@ -54,7 +55,11 @@ console.log("Article ID from params:", articleId)
         )}
 
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">{article.title}</CardTitle>
+          <CardTitle className="text-3xl font-bold">
+            <Link href={`/admin/Articles/author/${article.author._id}`}>
+            {article.title}
+            </Link>
+            </CardTitle>
           {article.author?.username && (
             <CardDescription>By {article.author.username}</CardDescription>
           )}
@@ -72,7 +77,7 @@ console.log("Article ID from params:", articleId)
 
           {/* Related Entity info */}
         
-          {article.relatedEntity?.title && (
+          {article.relatedEntity&& (
             <div className="space-y-2">
               <h3 className="font-semibold text-lg">
                 Related: {article.relatedEntity?.title}
