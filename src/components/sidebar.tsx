@@ -8,8 +8,9 @@ const menu = [
   { href: "/admin", label: "Dashboard", icon: Home },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/Entities", label: "Movies", icon: Film },
-  { href: "/admin/Articles", label: "articles", icon: Newspaper },
+  { href: "/admin/Articles", label: "Articles", icon: Newspaper },
    { href: "/admin/tv", label: "TV", icon: Tv },
+    { href: "/admin/people", label: "People", icon: Users },
 ]
 
 export function Sidebar() {

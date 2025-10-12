@@ -92,3 +92,7 @@ export async function getArticlesByAuthor(authorId: string) {
   return data
   
 }
+export async function getAllPeople() {
+  const { data } = await api.get(`/people`)
+  return data
+}
