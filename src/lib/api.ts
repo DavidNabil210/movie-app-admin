@@ -80,6 +80,7 @@ export async function deleteArticle(id:string) {
 }
 
 export async function getArticleById(id: string) {
-  const { data } = await api.get(`/api/articles/${id}`)
+  const { data } = await api.get(`/articles/${id}`)
   return data
+  
 }

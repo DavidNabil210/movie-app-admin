@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "next/navigation"
-import { getEntityById } from "@/lib/api"
+import { getArticleById  } from "@/lib/api"
 import {
   Card,
   CardHeader,
@@ -21,7 +21,7 @@ export default function ArticleDetails() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["article", articleId],
-    queryFn: () => getEntityById(articleId),
+    queryFn: () => getArticleById (articleId),
   })
 
   if (isLoading)
@@ -35,15 +35,19 @@ export default function ArticleDetails() {
 
   if (isError) return <p className="text-red-500 text-center mt-6">Something went wrong.</p>
 
-  const article = data?.entity
+  const article = data?.article
+  console.log("Full data:", data)
+console.log("Article article:", data?.article)
+console.log("Article ID from params:", articleId)
+
   if (!article) return <p className="text-center text-gray-500 mt-6">No data found.</p>
 
   return (
     <div className="container mx-auto p-6">
       <Card className="overflow-hidden shadow-lg">
-        {article.coverUrl && (
+        {article.relatedEntity?.coverUrl && (
           <img
-            src={article.coverUrl}
+            src={article.relatedEntity.coverUrl}
             alt={article.title}
             className="w-full h-96 object-cover"
           />
@@ -51,8 +55,8 @@ export default function ArticleDetails() {
 
         <CardHeader>
           <CardTitle className="text-3xl font-bold">{article.title}</CardTitle>
-          {article.author && (
-            <CardDescription>By {article.author}</CardDescription>
+          {article.author?.username && (
+            <CardDescription>By {article.author.username}</CardDescription>
           )}
         </CardHeader>
 
@@ -66,26 +70,32 @@ export default function ArticleDetails() {
 
           <Separator />
 
-          {/*  Tags */}
-          {article.tags && article.tags.length > 0 && (
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Tags</h2>
-              <div className="flex flex-wrap gap-2">
-                {article.tags.map((tag: string, index: number) => (
-                  <Badge key={index} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
+          {/* Related Entity info */}
+        
+          {article.relatedEntity?.title && (
+            <div className="space-y-2">
+              <h3 className="font-semibold text-lg">
+                Related: {article.relatedEntity?.title}
+              </h3>
+              <p className="text-muted-foreground">
+                {article.relatedEntity?.description}
+              </p>
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary" className="capitalize">
+                  {article.relatedEntity?.type}
+                </Badge>
+                <span className="text-sm text-muted-foreground">
+                  ⭐ {article.relatedEntity?.rating}
+                </span>
               </div>
             </div>
           )}
-
-          <Separator />
-
+          <Separator/>
           {/*  Dates */}
           <div className="text-sm text-muted-foreground space-y-1">
             <p>Created At: {new Date(article.createdAt).toLocaleString()}</p>
             <p>Updated At: {new Date(article.updatedAt).toLocaleString()}</p>
+            
           </div>
         </CardContent>
       </Card>
