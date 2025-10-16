@@ -96,3 +96,8 @@ export async function getAllPeople() {
   const { data } = await api.get(`/people`)
   return data
 }
+export async function getAllCharacters() {
+  const res = await fetch("/api/characters")
+  if (!res.ok) throw new Error("Failed to fetch characters")
+  return res.json()
+}
