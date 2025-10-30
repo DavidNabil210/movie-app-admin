@@ -101,3 +101,14 @@ export async function getAllCharacters() {
   if (!res.ok) throw new Error("Failed to fetch characters")
   return res.json()
 }
+//add person
+ interface personInput {
+  name: string
+  role?: string
+  bio?: string
+  avatar?: string
+}
+export async function addPerson(personData:personInput) {
+  const {data}=await api.post(`/people`,personData)
+  return data
+}

@@ -1,7 +1,7 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
-import { getAllPeople } from "@/lib/api"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { getAllPeople,addPerson  } from "@/lib/api"
 import {
   Table,
   TableBody,
@@ -14,13 +14,54 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function PeoplePage() {
+  const queryClient = useQueryClient()
   const { data, isLoading, isError } = useQuery({
     queryKey: ["people"],
     queryFn: () => getAllPeople(),
   })
+ const [open, setOpen] = useState(false)
+  const [form, setForm] = useState({ name: "", role: "", bio: "", avatar: "" })
 
+  const mutation = useMutation({
+    mutationFn: addPerson,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["people"] })
+      setOpen(false)
+      setForm({ name: "", role: "", bio: "", avatar: "" })
+    },
+    onError: (error: any) => {
+      console.error("Error adding person:", error.response?.data || error.message)
+      alert("Failed to add person. Please check the console for details.")
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    // Clean the data - only include non-empty fields
+    const personData: any = { 
+      name: form.name.trim() 
+    }
+    
+    if (form.role.trim()) {
+      personData.role = form.role.trim()
+    }
+    if (form.bio.trim()) {
+      personData.bio = form.bio.trim()
+    }
+    if (form.avatar.trim()) {
+      personData.avatar = form.avatar.trim()
+    }
+    
+    mutation.mutate(personData)
+  }
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -35,9 +76,51 @@ export default function PeoplePage() {
 
   return (
     <Card className="m-6">
-      <CardHeader>
+     <CardHeader className="flex justify-between items-center">
         <CardTitle>People</CardTitle>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button>Add Person</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Person</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                placeholder="Name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+              />
+              <Input
+                placeholder="Role"
+                value={form.role}
+                onChange={(e) => setForm({ ...form, role: e.target.value })}
+              />
+              <Input
+                placeholder="Avatar URL"
+                value={form.avatar}
+                onChange={(e) => setForm({ ...form, avatar: e.target.value })}
+              />
+              <Textarea
+                placeholder="Bio"
+                value={form.bio}
+                onChange={(e) => setForm({ ...form, bio: e.target.value })}
+              />
+              <DialogFooter>
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : null}
+                  Add
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </CardHeader>
+
       <CardContent>
         <Table>
           <TableHeader>
