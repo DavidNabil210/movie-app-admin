@@ -37,7 +37,7 @@ export async function getTvShows() {
     const { data } = await api.get("/entities/tv/filter")
     console.log("TV Shows data:", data)
     // ✅ Map tvShows to entities to match component expectations
-    return { 
+    return {
       entities: data?.tvShows || [],
       count: data?.count || 0,
       success: data?.success || false
@@ -56,7 +56,7 @@ export async function deleteEntity(id: string) {
 }
 
 //get entity by id 
-export async function getEntityById(id:string) {
+export async function getEntityById(id: string) {
   const { data } = await api.get(`/entities/${id}`)
   return data
 }
@@ -66,31 +66,31 @@ export async function getEntityById(id:string) {
 interface ArticleInput {
   title: string
   content: string
-  
+
 }
 
-export async function addArticle(articleData:ArticleInput) {
-  const {data}=await api.post(`/articles`,articleData)
+export async function addArticle(articleData: ArticleInput) {
+  const { data } = await api.post(`/articles`, articleData)
   return data
 }
 //delete article 
-export async function deleteArticle(id:string) {
-  const {data}=await api.delete(`/articles/${id}`)
+export async function deleteArticle(id: string) {
+  const { data } = await api.delete(`/articles/${id}`)
   return data
 }
 
 export async function getArticleById(id: string) {
   const { data } = await api.get(`/articles/${id}`)
   return data
-  
+
 }
 
 //Get All Articles By Author
 export async function getArticlesByAuthor(authorId: string) {
 
-   const { data } = await api.get(`/articles/author/${authorId}`)
+  const { data } = await api.get(`/articles/author/${authorId}`)
   return data
-  
+
 }
 export async function getAllPeople() {
   const { data } = await api.get(`/people`)
@@ -102,25 +102,26 @@ export async function getAllCharacters() {
   return res.json()
 }
 //add person
- interface personInput {
+interface personInput {
   name: string
-  role?: string
   bio?: string
-  avatar?: string
+  dateOfBirth?: string
+  photoUrl?: string
+  roles: string[]
 }
-export async function addPerson(personData:personInput) {
-  const {data}=await api.post(`/people`,personData)
+export async function addPerson(personData: personInput) {
+  const { data } = await api.post(`/people`, personData)
   return data
 }
 
 // add new character
-export async function addCharacter(characterData:{
-  name:string
-  description:string
-  actor:string
-  entity:string
+export async function addCharacter(characterData: {
+  name: string
+  description: string
+  actor: string
+  entity: string
 }) {
-  const {data}=await api.post("/character",characterData)
+  const { data } = await api.post("/character", characterData)
   return data
 }
 

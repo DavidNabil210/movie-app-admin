@@ -1,7 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getAllPeople,addPerson  } from "@/lib/api"
+import { getAllPeople, addPerson } from "@/lib/api"
 import {
   Table,
   TableBody,
@@ -26,15 +26,27 @@ export default function PeoplePage() {
     queryKey: ["people"],
     queryFn: () => getAllPeople(),
   })
- const [open, setOpen] = useState(false)
-  const [form, setForm] = useState({ name: "", role: "", bio: "", avatar: "" })
+  const [open, setOpen] = useState(false)
+  const [form, setForm] = useState({
+    name: "",
+    bio: "",
+    dateOfBirth: "",
+    photoUrl: "",
+    roles: "",
+  })
 
   const mutation = useMutation({
     mutationFn: addPerson,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["people"] })
       setOpen(false)
-      setForm({ name: "", role: "", bio: "", avatar: "" })
+      setForm({
+        name: "",
+        bio: "",
+        dateOfBirth: "",
+        photoUrl: "",
+        roles: "",
+      })
     },
     onError: (error: any) => {
       console.error("Error adding person:", error.response?.data || error.message)
@@ -44,22 +56,19 @@ export default function PeoplePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Clean the data - only include non-empty fields
-    const personData: any = { 
-      name: form.name.trim() 
+    const personData = {
+      name: form.name.trim(),
+      bio: form.bio.trim() || undefined,
+      dateOfBirth: form.dateOfBirth || undefined,
+      photoUrl: form.photoUrl.trim() || undefined,
+      roles: form.roles
+        ? form.roles.split(",").map((r) => r.trim()).filter(Boolean)
+        : [],
     }
-    
-    if (form.role.trim()) {
-      personData.role = form.role.trim()
-    }
-    if (form.bio.trim()) {
-      personData.bio = form.bio.trim()
-    }
-    if (form.avatar.trim()) {
-      personData.avatar = form.avatar.trim()
-    }
-    
+
+
     mutation.mutate(personData)
   }
   if (isLoading) {
@@ -76,7 +85,7 @@ export default function PeoplePage() {
 
   return (
     <Card className="m-6">
-     <CardHeader className="flex justify-between items-center">
+      <CardHeader className="flex justify-between items-center">
         <CardTitle>People</CardTitle>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -95,13 +104,19 @@ export default function PeoplePage() {
               />
               <Input
                 placeholder="Role"
-                value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value })}
+                value={form.roles}
+                onChange={(e) => setForm({ ...form, roles: e.target.value })}
               />
               <Input
-                placeholder="Avatar URL"
-                value={form.avatar}
-                onChange={(e) => setForm({ ...form, avatar: e.target.value })}
+                type="date"
+                placeholder="Date of Birth"
+                value={form.dateOfBirth}
+                onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })}
+              />
+              <Input
+                placeholder="Photo URL"
+                value={form.photoUrl}
+                onChange={(e) => setForm({ ...form, photoUrl: e.target.value })}
               />
               <Textarea
                 placeholder="Bio"
