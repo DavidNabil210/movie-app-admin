@@ -7,11 +7,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
+import AddCharacter from "@/components/AddCharacter"
 
 export default function CharactersPage() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["characters"],
-    queryFn: () => getAllCharacters(),
+    
+    queryFn:  ()=> getAllCharacters(),
+    
   })
 
   if (isLoading)
@@ -28,8 +31,9 @@ export default function CharactersPage() {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex justify-between items-center">
         <CardTitle>Characters</CardTitle>
+         <AddCharacter />
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">

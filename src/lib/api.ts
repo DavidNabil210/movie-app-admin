@@ -112,3 +112,15 @@ export async function addPerson(personData:personInput) {
   const {data}=await api.post(`/people`,personData)
   return data
 }
+
+// add new character
+export async function addCharacter(characterData:{
+  name:string
+  description:string
+  actor:string
+  entity:string
+}) {
+  const {data}=await api.post("/character",characterData)
+  return data
+}
+
