@@ -165,7 +165,7 @@ export default function PeoplePage() {
                     {person.name}
                   </Link>
                 </TableCell>
-                <TableCell>{person.role ?? "—"}</TableCell>
+                <TableCell>{person.roles ?? "—"}</TableCell>
                 <TableCell className="max-w-[300px] truncate text-muted-foreground">
                   {person.bio ?? "—"}
                 </TableCell>

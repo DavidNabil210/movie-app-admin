@@ -97,9 +97,9 @@ export async function getAllPeople() {
   return data
 }
 export async function getAllCharacters() {
-  const res = await fetch("/api/characters")
-  if (!res.ok) throw new Error("Failed to fetch characters")
-  return res.json()
+
+ const { data } = await api.get(`/characters`)
+  return data
 }
 //add person
 interface personInput {
@@ -121,7 +121,7 @@ export async function addCharacter(characterData: {
   actor: string
   entity: string
 }) {
-  const { data } = await api.post("/character", characterData)
+  const { data } = await api.post("/characters", characterData)
   return data
 }
 
