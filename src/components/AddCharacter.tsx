@@ -117,9 +117,9 @@ export default function AddCharacter() {
     })
     console.log("Entities data:", entitiesData)
 
-    const actors = Array.isArray(actorsData)
-        ? actorsData
-        : actorsData?.data || actorsData?.people || []
+   const actors = Array.isArray(actorsData)
+  ? actorsData
+  : actorsData?.people || []
 
     const entities = Array.isArray(entitiesData)
         ? entitiesData
