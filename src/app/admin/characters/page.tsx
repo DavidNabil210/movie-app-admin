@@ -28,7 +28,7 @@ export default function CharactersPage() {
   const characters = data?.characters || []
 
   return (
-  <div className="bg-gray-200">
+  <div >
       <Card className="bg-gray-900 border-gray-800 text-gray-100">
       <CardHeader className="flex justify-between items-center border-b border-gray-800">
         <div>

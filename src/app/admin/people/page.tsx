@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Loader2 } from "lucide-react"
+import { Edit, Eye, Loader2, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -84,8 +84,8 @@ export default function PeoplePage() {
   }
 
   return (
-    <Card className="m-6">
-      <CardHeader className="flex justify-between items-center">
+    <Card className="m-6 bg-gray-900 border-gray-800 text-gray-100">
+      <CardHeader className="flex justify-between items-center border-b border-gray-800">
         <CardTitle>People</CardTitle>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -137,13 +137,16 @@ export default function PeoplePage() {
       </CardHeader>
 
       <CardContent>
-        <Table>
+      <div className="overflow-x-auto">
+          <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Avatar</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Bio</TableHead>
+            <TableRow className="bg-gray-800">
+              <TableHead className="text-gray-400">Avatar</TableHead>
+              <TableHead className="text-gray-400">Name</TableHead>
+              <TableHead className="text-gray-400">Role</TableHead>
+              <TableHead className="text-gray-400">Bio</TableHead>
+
+              <TableHead className="text-gray-400">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -160,7 +163,7 @@ export default function PeoplePage() {
                 <TableCell>
                   <Link
                     href={`/people/${person._id}`}
-                    className="text-blue-500 hover:underline"
+                    className="text-yellow-500 hover:underline"
                   >
                     {person.name}
                   </Link>
@@ -169,10 +172,24 @@ export default function PeoplePage() {
                 <TableCell className="max-w-[300px] truncate text-muted-foreground">
                   {person.bio ?? "—"}
                 </TableCell>
+                 <TableCell>
+                    <div className="flex gap-2">
+                      <button className="p-2 hover:bg-gray-700 rounded">
+                        <Eye size={16} className="text-gray-400" />
+                      </button>
+                      <button className="p-2 hover:bg-gray-700 rounded">
+                        <Edit size={16} className="text-blue-400" />
+                      </button>
+                      <button className="p-2 hover:bg-gray-700 rounded">
+                        <Trash2 size={16} className="text-red-400" />
+                      </button>
+                    </div>
+                  </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+      </div>
       </CardContent>
     </Card>
   )
