@@ -65,9 +65,9 @@ export default function AddPersonDialog() {
         <Button>Add Person</Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="bg-gray-900 border border-gray-800 text-gray-100 rounded-lg max-w-md w-full shadow-lg p-6 space-y-4">
         <DialogHeader>
-          <DialogTitle>Add New Person</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">Add New Person</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -76,12 +76,14 @@ export default function AddPersonDialog() {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
+            className="bg-gray-800 text-gray-100 border-gray-700"
           />
 
           <Input
             placeholder="Role"
             value={form.roles}
             onChange={(e) => setForm({ ...form, roles: e.target.value })}
+            className="bg-gray-800 text-gray-100 border-gray-700"
           />
 
           <Input
@@ -91,6 +93,7 @@ export default function AddPersonDialog() {
             onChange={(e) =>
               setForm({ ...form, dateOfBirth: e.target.value })
             }
+            className="bg-gray-800 text-gray-100 border-gray-700"
           />
 
           <Input
@@ -99,16 +102,21 @@ export default function AddPersonDialog() {
             onChange={(e) =>
               setForm({ ...form, photoUrl: e.target.value })
             }
+            className="bg-gray-800 text-gray-100 border-gray-700"
           />
 
           <Textarea
             placeholder="Bio"
             value={form.bio}
             onChange={(e) => setForm({ ...form, bio: e.target.value })}
+            className="bg-gray-800 text-gray-100 border-gray-700"
           />
 
           <DialogFooter>
-            <Button type="submit" disabled={mutation.isPending}>
+            <Button type="submit"
+             className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
+             disabled={mutation.isPending}>
+                
               {mutation.isPending && (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
               )}
