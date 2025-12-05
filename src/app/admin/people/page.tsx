@@ -20,6 +20,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import AddPersonDialog from "@/components/AddPersonDialog"
+import { Badge } from "@/components/ui/badge"
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip"
 
 export default function PeoplePage() {
   // const queryClient = useQueryClient()
@@ -88,63 +95,104 @@ export default function PeoplePage() {
     <Card className="m-6 bg-gray-900 border-gray-800 text-gray-100">
       <CardHeader className="flex justify-between items-center border-b border-gray-800">
         <CardTitle>People</CardTitle>
-        <AddPersonDialog/>
+        <AddPersonDialog />
       </CardHeader>
 
       <CardContent>
-      <div className="overflow-x-auto">
+        <div className="overflow-x-auto">
           <Table>
-          <TableHeader>
-            <TableRow className="bg-gray-800">
-              <TableHead className="text-gray-400">Avatar</TableHead>
-              <TableHead className="text-gray-400">Name</TableHead>
-              <TableHead className="text-gray-400">Role</TableHead>
-              <TableHead className="text-gray-400">Bio</TableHead>
+            <TableHeader>
+              <TableRow className="bg-gray-800">
+                <TableHead className="text-gray-400">Avatar</TableHead>
+                <TableHead className="text-gray-400">Name</TableHead>
+                <TableHead className="text-gray-400">Role</TableHead>
+                <TableHead className="text-gray-400">Bio</TableHead>
 
-              <TableHead className="text-gray-400">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.people.map((person: any) => (
-              <TableRow key={person._id}>
-                <TableCell>
-                  <Avatar>
-                    <AvatarImage src={person.avatar} alt={person.name} />
-                    <AvatarFallback>
-                      {person.name?.charAt(0).toUpperCase() ?? "?"}
-                    </AvatarFallback>
-                  </Avatar>
-                </TableCell>
-                <TableCell>
-                  <Link
-                    href={`/people/${person._id}`}
-                    className="text-yellow-500 hover:underline"
-                  >
-                    {person.name}
-                  </Link>
-                </TableCell>
-                <TableCell>{person.roles ?? "—"}</TableCell>
-                <TableCell className="max-w-[300px] truncate text-muted-foreground">
-                  {person.bio ?? "—"}
-                </TableCell>
-                 <TableCell>
+                <TableHead className="text-gray-400">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.people.map((person: any) => (
+                <TableRow key={person._id}>
+                  {/*  */}
+                  <TableCell>
+
+                    <Avatar>
+                      <AvatarImage src={person.photoUrl} alt={person.name} />
+                      <AvatarFallback>
+                        {person.name?.charAt(0).toUpperCase() ?? "?"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  {/* Name */}
+                  <TableCell>
+                    <Link
+                      href={`/people/${person._id}`}
+                      className="text-yellow-500 hover:underline"
+                    >
+                      {person.name}
+                    </Link>
+                  </TableCell>
+                  {/* Role */}
+                  <TableCell>{person.roles ? <Badge variant={"secondary"}>{person.roles}</Badge> : ("—")}</TableCell>
+                  {/* Bio */}
+                  <TableCell className="max-w-[300px] truncate text-muted-foreground">
+                    {person.bio ?? "—"}
+                  </TableCell>
+                  {/* Actions */}
+                  <TableCell>
                     <div className="flex gap-2">
-                      <button className="p-2 hover:bg-gray-700 rounded">
-                        <Eye size={16} className="text-gray-400" />
-                      </button>
-                      <button className="p-2 hover:bg-gray-700 rounded">
-                        <Edit size={16} className="text-blue-400" />
-                      </button>
-                      <button className="p-2 hover:bg-gray-700 rounded">
-                        <Trash2 size={16} className="text-red-400" />
-                      </button>
+
+                      {/* View */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button className="p-2 hover:bg-gray-700 rounded">
+                              <Eye size={16} className="text-gray-400" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" align="end">
+                            <p>View</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
+                      {/* Edit */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button className="p-2 hover:bg-gray-700 rounded">
+                              <Edit size={16} className="text-blue-400" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" align="end">
+                            <p>Edit</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
+                      {/* Delete */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button className="p-2 hover:bg-gray-700 rounded">
+                              <Trash2 size={16} className="text-red-400" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" align="end">
+                            <p>Delete</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
                     </div>
                   </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   )
